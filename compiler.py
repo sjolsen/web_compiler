@@ -44,32 +44,33 @@ def main(argv):
     with open(FLAGS.manifest, 'rt') as f:
         manifest = eval(f.read(), globals())
     assert isinstance(manifest, Manifest)
-    link = linker.Linker()
-    documents = set()
-    for i in manifest.inputs:
-        basename = os.path.basename(i.src_url)
-        if isinstance(i, Asset):
-            link.add_resource(
-                ref=linker.Reference(i.src_url),
-                out=os.path.join(manifest.output_root, 'assets', basename),
-                resource=linker.StaticResource(i.path))
-        elif isinstance(i, Document):
-            base, _ = os.path.splitext(basename)
-            ref = linker.Reference(i.src_url)
-            doc = frontend.LoadDocument(i.path)
-            link.add_resource(
-                ref=ref,
-                out=os.path.join(manifest.output_root, base + '.html'),
-                resource=page.PageResource(swissdoc.RenderDocument(doc)))
-            documents.add(ref)
-        else:
-            raise TypeError(i)
-    link.add_resource(
-        ref='_index',
-        out=os.path.join(manifest.output_root, 'index.html'),
-        resource=linker.LinkResource(linker.Reference(manifest.index)))
     with tempfile.TemporaryDirectory() as d:
-        link.link(d, documents)
+        link = linker.Linker(d)
+        documents = set()
+        for i in manifest.inputs:
+            basename = os.path.basename(i.src_url)
+            if isinstance(i, Asset):
+                link.add_resource(
+                    ref=linker.Reference(i.src_url),
+                    out=os.path.join(manifest.output_root, 'assets', basename),
+                    resource=linker.StaticResource(i.path))
+            elif isinstance(i, Document):
+                base, _ = os.path.splitext(basename)
+                ref = linker.Reference(i.src_url)
+                doc = frontend.LoadDocument(i.path)
+                link.add_resource(
+                    ref=ref,
+                    out=os.path.join(manifest.output_root, base + '.html'),
+                    resource=page.PageResource(swissdoc.RenderDocument(doc)))
+                documents.add(ref)
+            else:
+                raise TypeError(i)
+        index = linker.Reference('_index')
+        link.add_resource(
+            ref=index,
+            out=os.path.join(manifest.output_root, 'index.html'),
+            resource=linker.LinkResource(linker.Reference(manifest.index)))
+        link.link(documents | {index})
         subprocess.check_call(['tar', '-czf', FLAGS.output, '-C', d, manifest.output_root])
 
 

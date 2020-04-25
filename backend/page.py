@@ -58,7 +58,7 @@ class PageResource(linker.Resource):
       content = self._render_fragment(item.content, link)
       return f'<{opentag}>{content}</{item.tag}>'
     elif isinstance(item, linker.Reference):
-      return link.resolve(item)
+      return f'/{link.resolve(item)}'
     else:
       raise TypeError(item)
 

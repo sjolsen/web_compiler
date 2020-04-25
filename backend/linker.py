@@ -42,14 +42,16 @@ class LinkResource(Resource):
     return {self.ref}
 
   def populate_fs(self, path: str, linker: 'Linker'):
-    real = linker.resolve(self.ref)
-    os.symlink(real, path)
+    real = linker.resolve(self.ref, absolute=True)
+    real_rel = os.path.relpath(real, os.path.dirname(path))
+    os.symlink(real_rel, path)
 
 
 class Linker(object):
 
-  def __init__(self):
+  def __init__(self, fs_root: str):
     super().__init__()
+    self._fs_root = fs_root
     self._resources: Dict[Reference, Resource] = dict()
     self._link_map: Dict[Reference, str] = dict()
     self._reverse_link_map: Dict[str, Reference] = dict()
@@ -62,18 +64,24 @@ class Linker(object):
     self._link_map[ref] = out
     self._reverse_link_map[out] = ref
 
-  def resolve(self, ref: Reference) -> str:
-    return self._link_map[ref]
+  def resolve(self, ref: Reference, *, absolute: bool = False) -> str:
+    if absolute:
+      return os.path.join(self._fs_root, self._link_map[ref])
+    else:
+      return self._link_map[ref]
 
-  def link(self, fs_root: str, entries: Set[Reference]):
+  def link(self, entries: Set[Reference]):
     frontier: Set[Reference] = set(entries)
+    closure: Set[Reference] = set()
     while frontier:
       new_frontier: Set[Reference] = set()
       for ref in frontier:
         res = self._resources[ref]
         new_frontier |= set(res.get_references())
-      frontier = new_frontier - set(self._link_map.keys())
-    for ref, relpath in self._link_map.items():
-      abspath = os.path.join(fs_root, relpath)
+      closure |= frontier
+      frontier = new_frontier - closure
+    for ref in closure:
+      abspath = self.resolve(ref, absolute=True)
       os.makedirs(os.path.dirname(abspath), exist_ok=True)
+      res = self._resources[ref]
       res.populate_fs(abspath, self)

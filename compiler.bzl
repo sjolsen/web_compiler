@@ -1,5 +1,3 @@
-load("//server:server.bzl", "ResourceInfo", "TransitiveResources")
-
 InputInfo = provider(fields = ["assets", "documents"])
 
 def _assets(ctx):
@@ -53,7 +51,7 @@ def _make_manifest(ctx, assets, documents, index, output_root):
     output_root={m_output_root})
 """.format(
         m_inputs = "[" + ", ".join(m_assets + m_docs) + "]",
-        m_index = repr(index.short_path),
+        m_index = repr(_runfiles_path(ctx, index)),
         m_output_root = repr(output_root))
     manifest = ctx.actions.declare_file(ctx.label.name + '_manifest')
     ctx.actions.write(
@@ -61,6 +59,8 @@ def _make_manifest(ctx, assets, documents, index, output_root):
         output = manifest,
     )
     return manifest
+
+SiteInfo = provider(fields = ["tarball"])
 
 def _site(ctx):
     assets = depset(transitive = [src[InputInfo].assets for src in ctx.attr.srcs])
@@ -79,6 +79,7 @@ def _site(ctx):
         inputs = depset([manifest], transitive = [assets, documents]),
         outputs = [ctx.outputs.out],
     )
+    return [SiteInfo(tarball = ctx.outputs.out)]
 
 site = rule(
     implementation = _site,
