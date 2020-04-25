@@ -137,7 +137,7 @@ def RenderCodeBlock(block) -> page.Fragment:
         H('pre', {}, body)),
     ]))
   else:
-    header = Render(block.header)
+    body = Render(block.body)
     return H('div', {'class': 'code'},
       H('div', {'class': 'code-body'},
         H('pre', {}, body)))

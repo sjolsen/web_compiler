@@ -1,7 +1,11 @@
-InputInfo = provider(fields = ["assets", "documents"])
+InputInfo = provider(fields = ["assets", "documents", "srcs"])
 
 def _assets(ctx):
-    return [InputInfo(assets = depset(ctx.files.srcs), documents = depset())]
+    return [InputInfo(
+        assets = depset(ctx.files.srcs),
+        documents = depset(),
+        srcs = depset(),
+    )]
 
 assets = rule(
     implementation = _assets,
@@ -11,14 +15,21 @@ assets = rule(
 )
 
 def _document(ctx):
-    return [InputInfo(assets = depset(), documents = depset([ctx.file.src]))]
+    return [InputInfo(
+        assets = depset(),
+        documents = depset([ctx.file.main]),
+        srcs = depset(ctx.files.srcs),
+    )]
 
 document = rule(
     implementation = _document,
     attrs = {
-        "src": attr.label(
+        "main": attr.label(
             mandatory = True,
             allow_single_file = True,
+        ),
+        "srcs": attr.label_list(
+            allow_files = True,
         ),
     },
 )
@@ -65,6 +76,7 @@ SiteInfo = provider(fields = ["tarball"])
 def _site(ctx):
     assets = depset(transitive = [src[InputInfo].assets for src in ctx.attr.srcs])
     documents = depset(transitive = [src[InputInfo].documents for src in ctx.attr.srcs])
+    srcs = depset(transitive = [src[InputInfo].srcs for src in ctx.attr.srcs])
     indices = ctx.attr.index[InputInfo].documents.to_list()
     if len(indices) != 1:
         fail("Must provide one index document", ctx.attr.index)
@@ -76,7 +88,7 @@ def _site(ctx):
     ctx.actions.run(
         executable = ctx.executable._compiler,
         arguments = [args],
-        inputs = depset([manifest], transitive = [assets, documents]),
+        inputs = depset([manifest], transitive = [assets, documents, srcs]),
         outputs = [ctx.outputs.out],
     )
     return [SiteInfo(tarball = ctx.outputs.out)]
