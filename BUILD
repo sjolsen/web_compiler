@@ -1,37 +1,13 @@
-load("@pip_deps//:requirements.bzl", "requirement")
-load("//server:server.bzl", "simple_resource")
-
-py_library(
-  name = "document",
-  srcs = ["document.py"],
-)
-
-py_library(
-  name = "parser",
-  srcs = ["parser.py"],
-  deps = [":document"],
-)
+package(default_visibility = ["//visibility:public"])
 
 py_binary(
-  name = "render",
-  srcs = ["render.py"],
-  deps = [
-      ":parser",
-      requirement("more_itertools"),
-  ],
-  visibility = ["//visibility:public"],
-)
-
-simple_resource(
-    name = "style",
-    src = "style.css",
-    path = "style.css",
-    visibility = ["//visibility:public"],
-)
-
-simple_resource(
-    name = "bullet",
-    src = "x.svg",
-    path = "x.svg",
-    visibility = ["//visibility:public"],
+    name = "compiler",
+    srcs = ["compiler.py"],
+    deps = [
+        "//compiler/backend:linker",
+        "//compiler/backend:page",
+        "//compiler/backend/swiss:document",
+        "//compiler/frontend:frontend",
+        "@rules_python//python/runfiles",
+    ],
 )

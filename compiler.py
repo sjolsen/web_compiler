@@ -42,6 +42,7 @@ def main(argv):
         raise app.UsageError('TODO')
     with open(FLAGS.manifest, 'rt') as f:
         manifest = eval(f.read(), globals())
+    print(manifest)
     assert isinstance(manifest, Manifest)
     r = runfiles.Create()
     link = linker.Linker()

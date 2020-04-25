@@ -1,5 +1,7 @@
 load("//compiler:compiler.bzl", "assets")
 
+package(default_visibility = ["//compiler:__subpackages__"])
+
 assets(
     name = "style",
     srcs = ["style.css"],
