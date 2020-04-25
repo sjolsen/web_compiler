@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css?family=Arimo&display=optional');
+@import url('https://fonts.googleapis.com/css?family=Cousine&display=optional');
+
+/* Layout */
+
+html {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header, div.main-content, footer {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+div.hcenter {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 53rem;
+}
+
+header {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+div.header-flexbox {
+  display: flex;
+  flex-direction: row;
+}
+
+div.header-flexbox .title-block {
+  flex-grow: 1;
+}
+
+div.header-flexbox .header-vr {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+div.header-flexbox nav {
+  margin-right: 1rem;
+  display: flex;
+}
+
+h1.title {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+hr.title-rule {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+h2.subtitle {
+  margin-top: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+nav ul {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.nav-spacer {
+  flew-grow: 0;
+  height: 0.5rem;
+}
+
+.nav-row {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.nav-icon {
+  padding-right: 0.8rem;
+  height: 2.2rem;
+}
+
+.nav-row li {
+  list-style-type: none;
+}
+
+div.main-content {
+  flex-grow: 1;
+}
+
+div.body-copy {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+div.code {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+div.code-header {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+div.code-body {
+  overflow: auto;
+}
+
+span.code {
+  margin: 0 0 0 0;
+}
+
+div.code-body pre {
+  margin: 1rem 1rem 1rem 1rem;
+  display: inline-block;  /* Preserve right-hand margin in scroll box */
+}
+
+footer {
+  bottom: 0;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+/* Style */
+
+body {
+  font-family: "Liberation Sans", "Arimo", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.0175em;
+  color: #2c2c2c;
+  background-color: #fffcf4;
+}
+
+header, footer {
+  color: #fffcf4;
+  background-color: #2c2c2c;
+}
+
+h1.title {
+  font-size: 3rem;
+}
+
+.title-rule {
+  border-style: solid;
+  border-color: #fffcf4;
+  border-width: 0.5px;
+}
+
+h2.subtitle {
+  font-weight: normal;
+}
+
+h2.section {
+  font-size: 1.75rem;
+}
+
+nav {
+  font-size: 1.75rem;
+}
+
+a.nav-row {
+  color: #fffcf4;
+  text-decoration: none;
+}
+
+a.nav-row:hover {
+  text-decoration: underline;
+}
+
+p {
+  line-height: 1.45;
+  text-align: justify;
+  color: black;
+}
+
+div.code {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #2c2c2c;
+}
+
+div.code-header {
+  color: white;
+  background-color: #2c2c2c;
+  line-height: 1.45;
+}
+
+div.code-body {
+  color: black;
+  background-color: white;
+}
+
+div.code-body pre, span.code {
+  font-family: "Liberation Mono", Cousine, monospace;
+  font-size: 11pt;
+}
