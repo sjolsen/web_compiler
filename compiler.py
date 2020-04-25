@@ -70,7 +70,7 @@ def main(argv):
         resource=linker.LinkResource(linker.Reference(manifest.index)))
     with tempfile.TemporaryDirectory() as d:
         link.link(d, documents)
-        subprocess.check_call(['tar', '-czf', FLAGS.output, '-C', d, '.'])
+        subprocess.check_call(['tar', '-czf', FLAGS.output, '-C', d, manifest.output_root])
 
 
 if __name__ == '__main__':
