@@ -6,7 +6,6 @@ from typing import NamedTuple, Sequence, Union
 
 from absl import app
 from absl import flags
-from rules_python.python.runfiles import runfiles
 
 from web_design.compiler.backend import linker
 from web_design.compiler.backend import page
@@ -22,10 +21,12 @@ FLAGS = flags.FLAGS
 
 class Asset(NamedTuple):
     src_url: str
+    path: str
 
 
 class Document(NamedTuple):
     src_url: str
+    path: str
 
 
 LinkerInput = Union[Asset, Document]
@@ -42,9 +43,7 @@ def main(argv):
         raise app.UsageError('TODO')
     with open(FLAGS.manifest, 'rt') as f:
         manifest = eval(f.read(), globals())
-    print(manifest)
     assert isinstance(manifest, Manifest)
-    r = runfiles.Create()
     link = linker.Linker()
     documents = set()
     for i in manifest.inputs:
@@ -53,11 +52,11 @@ def main(argv):
             link.add_resource(
                 ref=linker.Reference(i.src_url),
                 out=os.path.join(manifest.output_root, 'assets', basename),
-                resource=linker.StaticResource(r.Rlocation(i.src_url)))
+                resource=linker.StaticResource(i.path))
         elif isinstance(i, Document):
             base, _ = os.path.splitext(basename)
             ref = linker.Reference(i.src_url)
-            doc = frontend.LoadDocument(r.Rlocation(i.src_url))
+            doc = frontend.LoadDocument(i.path)
             link.add_resource(
                 ref=ref,
                 out=os.path.join(manifest.output_root, base + '.html'),

@@ -45,8 +45,8 @@ def _runfiles_path(ctx, file):
     return _workspace(ctx, file.owner) + "/" + file.short_path
 
 def _make_manifest(ctx, assets, documents, index, output_root):
-    m_assets = ["Asset(%s)" % repr(_runfiles_path(ctx, f)) for f in assets.to_list()]
-    m_docs = ["Document(%s)" % repr(_runfiles_path(ctx, f)) for f in documents.to_list()]
+    m_assets = ["Asset(%s, %s)" % (repr(_runfiles_path(ctx, f)), repr(f.path)) for f in assets.to_list()]
+    m_docs = ["Document(%s, %s)" % (repr(_runfiles_path(ctx, f)), repr(f.path)) for f in documents.to_list()]
     m_contents = """Manifest(
     inputs={m_inputs},
     index={m_index},

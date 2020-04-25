@@ -73,7 +73,7 @@ class Linker(object):
         res = self._resources[ref]
         new_frontier |= set(res.get_references())
       frontier = new_frontier - set(self._link_map.keys())
-    for ref, relpath in self._link_map:
+    for ref, relpath in self._link_map.items():
       abspath = os.path.join(fs_root, relpath)
       os.makedirs(os.path.dirname(abspath), exist_ok=True)
       res.populate_fs(abspath, self)

@@ -48,10 +48,11 @@ def TitleBlock(title: page.Fragment, subtitle: page.Fragment) -> page.Fragment:
 
 
 def Nav() -> page.Fragment:
+  nav_icon = linker.Reference('web_design/compiler/backend/swiss/x.svg')
   links = [
-    ('Home', '#', linker.Reference('x.svg')),
-    ('Document index', '#', linker.Reference('x.svg')),
-    ('Contact', '#', linker.Reference('x.svg')),
+    ('Home', '#', nav_icon),
+    ('Document index', '#', nav_icon),
+    ('Contact', '#', nav_icon),
   ]
   anchors = [
     H('a', {'class': 'nav-row', 'href': href}, page.MixedContent([
@@ -72,9 +73,9 @@ def RenderDocument(doc) -> page.Fragment:
   subtitle = Render(doc.subtitle)
   copyright = Render(doc.copyright)
   sections = page.MixedContent([Render(s) for s in doc.sections])
-  style = linker.Reference('style.css')
+  style = linker.Reference('web_design/compiler/backend/swiss/style.css')
 
-  head = H('head', page.MixedContent([
+  head = H('head', {}, page.MixedContent([
     H('meta', {'charset': 'utf-8'}),
     H('title', {}, title),
     H('link', {'rel': 'stylesheet', 'href': style, 'type': 'text/css'}),
@@ -115,7 +116,8 @@ def RenderDocumentSection(section) -> page.Fragment:
 
 @Render.register(document.HTMLNode)
 def RenderHTMLNode(node) -> page.Fragment:
-  return page.HTMLNode(tag=node.tag, attrs=node.attrs, content=node.content)
+  content = Render(node.content)
+  return page.HTMLNode(tag=node.tag, attrs=node.attrs, content=content)
 
 
 @Render.register(document.Code)

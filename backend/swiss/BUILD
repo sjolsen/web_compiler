@@ -3,13 +3,15 @@ load("//compiler:compiler.bzl", "assets")
 package(default_visibility = ["//compiler:__subpackages__"])
 
 assets(
-    name = "style",
-    srcs = ["style.css"],
+    name = "nav_buttons",
+    srcs = ["x.svg"],
+    visibility = ["//visibility:public"],  # TODO: Make this implicit
 )
 
 assets(
-    name = "nav_buttons",
-    srcs = ["x.svg"],
+    name = "style",
+    srcs = ["style.css"],
+    visibility = ["//visibility:public"],  # TODO: Make this implicit
 )
 
 py_library(

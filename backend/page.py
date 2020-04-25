@@ -43,25 +43,25 @@ class PageResource(linker.Resource):
     return refs
 
   def _render_fragment(self, item: Fragment,
-                       linker: linker.Linker) -> Text:
+                       link: linker.Linker) -> Text:
     if isinstance(item, str):
       return item
     elif isinstance(item, MixedContent):
       # TODO: Indent HTML tags excluding pre?
-      return ''.join(self._render_fragment(p, linker) for p in item.parts)
+      return ''.join(self._render_fragment(p, link) for p in item.parts)
     elif isinstance(item, HTMLNode):
       parts = [item.tag]
       for key, value in item.attrs.items():
-        value = self._render_fragment(value, linker)
+        value = self._render_fragment(value, link)
         parts.append(f'{key}="{value}"')
       opentag = ' '.join(parts)
-      content = self._render_fragment(item.content, linker)
+      content = self._render_fragment(item.content, link)
       return f'<{opentag}>{content}</{item.tag}>'
     elif isinstance(item, linker.Reference):
-      return linker.resolve(item)
+      return link.resolve(item)
     else:
       raise TypeError(item)
 
-  def populate_fs(self, path: str, linker: linker.Linker):
+  def populate_fs(self, path: str, link: linker.Linker):
     with open(path, 'wt') as f:
-      f.write(self._render_fragment(self._fragment, linker))
+      f.write(self._render_fragment(self._fragment, link))

@@ -8,6 +8,5 @@ py_binary(
         "//compiler/backend:page",
         "//compiler/backend/swiss:document",
         "//compiler/frontend:frontend",
-        "@rules_python//python/runfiles",
     ],
 )
