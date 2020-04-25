@@ -43,7 +43,7 @@ def TitleBlock(title: page.Fragment, subtitle: page.Fragment) -> page.Fragment:
   return H('div', {'class': 'title-block'}, page.MixedContent([
     H('h1', {'class': 'title'}, title),
     H('hr', {'class': 'title-rule'}),
-    H('h1', {'class': 'subtitle'}, subtitle),
+    H('h2', {'class': 'subtitle'}, subtitle),
   ]))
 
 
