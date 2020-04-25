@@ -86,10 +86,13 @@ def _site(ctx):
     args.add("--manifest", manifest)
     args.add("--output", ctx.outputs.out)
     args.add("--info_file", ctx.info_file)
+    args.add("--version_file", ctx.version_file)
     ctx.actions.run(
         executable = ctx.executable._compiler,
         arguments = [args],
-        inputs = depset([manifest, ctx.info_file], transitive = [assets, documents, srcs]),
+        inputs = depset(
+            [manifest, ctx.info_file, ctx.version_file],
+            transitive = [assets, documents, srcs]),
         outputs = [ctx.outputs.out],
     )
     return [SiteInfo(tarball = ctx.outputs.out)]

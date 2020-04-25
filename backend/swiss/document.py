@@ -10,7 +10,8 @@ from web_design.compiler.backend import page
 from web_design.compiler.frontend import document
 
 flags.DEFINE_string('info_file', None, 'TODO')
-flags.mark_flags_as_required(['info_file'])
+flags.DEFINE_string('version_file', None, 'TODO')
+flags.mark_flags_as_required(['info_file', 'version_file'])
 
 FLAGS = flags.FLAGS
 
@@ -75,14 +76,32 @@ def Nav() -> page.Fragment:
   ]))
 
 
+def _ParseBazelInfo(filename: str) -> Dict[str, str]:
+  result = dict()
+  with open(filename, 'rt') as f:
+    for line in f:
+      line = line.strip()
+      parts = line.split(' ', 1)
+      if len(parts) == 2:
+        result[parts[0]] = parts[1]
+      else:
+        result[parts[0]] = ''
+  return result
+
+
 def FooterBlock(copyright: page.Fragment) -> page.Fragment:
-  with open(FLAGS.info_file, 'rt') as f:
-    info = dict(l.split(' ', 1) for l in f)
-  git_ref = info["STABLE_GIT_COMMIT"].strip()
+  # Get the build timestamp to embed in the footer
+  version = _ParseBazelInfo(FLAGS.version_file)
+  ts = datetime.datetime.utcfromtimestamp(int(version['BUILD_TIMESTAMP']))
+  date = ts.strftime('%Y-%m-%d')
+  # Get the git hash to embed in the footer
+  info = _ParseBazelInfo(FLAGS.info_file)
+  git_ref = info['STABLE_GIT_COMMIT']
   if git_ref.endswith('-dirty'):
     git_hash = git_ref[:-6]
   else:
     git_hash = git_ref
+  # TODO: Use the same mechanism to get the git remote URL
   git_url = f'https://github.com/sjolsen/web-design/commit/{git_hash}'
   return page.MixedContent([
     H('div', {'class': 'footer-left'}, page.MixedContent([
@@ -90,7 +109,7 @@ def FooterBlock(copyright: page.Fragment) -> page.Fragment:
       copyright,
     ])),
     H('div', {'class': 'footer-right'}, page.MixedContent([
-      f'Built from ',
+      f'Built {date} from ',
       H('a', {'class': 'footer-git', 'href': git_url}, git_ref),
     ])),
   ])
