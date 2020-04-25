@@ -132,6 +132,15 @@ footer {
   padding-bottom: 1em;
 }
 
+div.footer-flexbox {
+  display: flex;
+  flex-direction: row;
+}
+
+div.footer-left {
+  flex-grow: 1;
+}
+
 /* Style */
 
 body {
@@ -203,4 +212,9 @@ div.code-body {
 div.code-body pre, span.code {
   font-family: "Liberation Mono", Cousine, monospace;
   font-size: 11pt;
+}
+
+a.footer-git {
+  color: #fffcf4;
+  text-decoration: underline;
 }

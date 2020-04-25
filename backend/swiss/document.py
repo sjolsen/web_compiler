@@ -3,9 +3,16 @@ import functools
 import html
 from typing import Any, Dict, Iterable, Iterator, Optional, Text
 
+from absl import flags
+
 from web_design.compiler.backend import linker
 from web_design.compiler.backend import page
 from web_design.compiler.frontend import document
+
+flags.DEFINE_string('info_file', None, 'TODO')
+flags.mark_flags_as_required(['info_file'])
+
+FLAGS = flags.FLAGS
 
 
 def intersperse(sep: Any, l: Iterable[Any]) -> Iterator[Any]:
@@ -69,9 +76,23 @@ def Nav() -> page.Fragment:
 
 
 def FooterBlock(copyright: page.Fragment) -> page.Fragment:
+  with open(FLAGS.info_file, 'rt') as f:
+    info = dict(l.split(' ', 1) for l in f)
+  git_ref = info["STABLE_GIT_COMMIT"].strip()
+  if git_ref.endswith('-dirty'):
+    git_hash = git_ref[:-6]
+  else:
+    git_hash = git_ref
+  git_url = f'https://github.com/sjolsen/web-design/commit/{git_hash}'
   return page.MixedContent([
-    f'Copyright © {datetime.datetime.now().year} ',
-    copyright,
+    H('div', {'class': 'footer-left'}, page.MixedContent([
+      f'Copyright © {datetime.datetime.now().year} ',
+      copyright,
+    ])),
+    H('div', {'class': 'footer-right'}, page.MixedContent([
+      f'Built from ',
+      H('a', {'class': 'footer-git', 'href': git_url}, git_ref),
+    ])),
   ])
 
 
@@ -98,7 +119,7 @@ def RenderDocument(doc) -> page.Fragment:
     H('div', {'class': 'hcenter'},
       H('div', {'class': 'body-copy'}, sections)))
   footer = H('footer', {},
-    H('div', {'class': 'hcenter'},
+    H('div', {'class': 'hcenter footer-flexbox'},
       FooterBlock(copyright)))
 
   return page.MixedContent([
