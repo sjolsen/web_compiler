@@ -1,3 +1,4 @@
+import datetime
 import functools
 import html
 from typing import Any, Dict, Iterable, Iterator, Optional, Text
@@ -67,6 +68,13 @@ def Nav() -> page.Fragment:
   ]))
 
 
+def FooterBlock(copyright: page.Fragment) -> page.Fragment:
+  return page.MixedContent([
+    f'Copyright © {datetime.datetime.now().year} ',
+    copyright,
+  ])
+
+
 @Render.register(document.Document)
 def RenderDocument(doc) -> page.Fragment:
   title = Render(doc.title)
@@ -89,7 +97,9 @@ def RenderDocument(doc) -> page.Fragment:
   main_content = H('div', {'class': 'main-content'},
     H('div', {'class': 'hcenter'},
       H('div', {'class': 'body-copy'}, sections)))
-  footer = H('footer', {}, H('div', {'class': 'hcenter'}, copyright))
+  footer = H('footer', {},
+    H('div', {'class': 'hcenter'},
+      FooterBlock(copyright)))
 
   return page.MixedContent([
     '<!DOCTYPE html>',
