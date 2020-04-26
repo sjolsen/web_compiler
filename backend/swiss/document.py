@@ -102,7 +102,7 @@ def FooterBlock(copyright: page.Fragment) -> page.Fragment:
   else:
     git_hash = git_ref
   # TODO: Use the same mechanism to get the git remote URL
-  git_url = f'https://github.com/sjolsen/web-design/commit/{git_hash}'
+  git_url = info['STABLE_GIT_URL'].format(git_hash=git_hash)
   return page.MixedContent([
     H('div', {'class': 'footer-left'}, page.MixedContent([
       f'Copyright © {datetime.datetime.now().year} ',
