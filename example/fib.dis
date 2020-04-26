@@ -1,0 +1,31 @@
+0000000000001060 <main>:
+    1060:       41 55                   push   %r13
+    1062:       4c 8d 2d 9b 0f 00 00    lea    0xf9b(%rip),%r13        # 2004 <_IO_stdin_used+0x4>
+    1069:       41 54                   push   %r12
+    106b:       41 bc 0a 00 00 00       mov    $0xa,%r12d
+    1071:       55                      push   %rbp
+    1072:       bd 01 00 00 00          mov    $0x1,%ebp
+    1077:       53                      push   %rbx
+    1078:       bb 01 00 00 00          mov    $0x1,%ebx
+    107d:       48 83 ec 08             sub    $0x8,%rsp
+    1081:       0f 1f 80 00 00 00 00    nopl   0x0(%rax)
+    1088:       89 de                   mov    %ebx,%esi
+    108a:       4c 89 ef                mov    %r13,%rdi
+    108d:       31 c0                   xor    %eax,%eax
+    108f:       e8 ac ff ff ff          callq  1040 <printf@plt>
+    1094:       8d 04 2b                lea    (%rbx,%rbp,1),%eax
+    1097:       89 eb                   mov    %ebp,%ebx
+    1099:       89 c5                   mov    %eax,%ebp
+    109b:       41 83 ec 01             sub    $0x1,%r12d
+    109f:       75 e7                   jne    1088 <main+0x28>
+    10a1:       bf 0a 00 00 00          mov    $0xa,%edi
+    10a6:       e8 85 ff ff ff          callq  1030 <putchar@plt>
+    10ab:       48 83 c4 08             add    $0x8,%rsp
+    10af:       31 c0                   xor    %eax,%eax
+    10b1:       5b                      pop    %rbx
+    10b2:       5d                      pop    %rbp
+    10b3:       41 5c                   pop    %r12
+    10b5:       41 5d                   pop    %r13
+    10b7:       c3                      retq
+    10b8:       0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+    10bf:       00

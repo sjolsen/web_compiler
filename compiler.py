@@ -7,10 +7,10 @@ from typing import NamedTuple, Sequence, Union
 from absl import app
 from absl import flags
 
-from web_design.compiler.backend import linker
-from web_design.compiler.backend import page
-from web_design.compiler.backend.swiss import document as swissdoc
-from web_design.compiler.frontend import frontend
+from web_compiler.backend import linker
+from web_compiler.backend import page
+from web_compiler.backend.swiss import document as swissdoc
+from web_compiler.frontend import frontend
 
 flags.DEFINE_string('manifest', None, 'TODO')
 flags.DEFINE_string('output', None, 'TODO')
@@ -45,6 +45,7 @@ def main(argv):
         manifest = eval(f.read(), globals())
     assert isinstance(manifest, Manifest)
     with tempfile.TemporaryDirectory() as d:
+        load = frontend.Loader({i.src_url: i.path for i in manifest.inputs})
         link = linker.Linker(d)
         documents = set()
         for i in manifest.inputs:
@@ -57,7 +58,7 @@ def main(argv):
             elif isinstance(i, Document):
                 base, _ = os.path.splitext(basename)
                 ref = linker.Reference(i.src_url)
-                doc = frontend.LoadDocument(i.path)
+                doc = load.LoadDocument(i.path)
                 link.add_resource(
                     ref=ref,
                     out=os.path.join(manifest.output_root, base + '.html'),

@@ -5,9 +5,9 @@ from typing import Any, Dict, Iterable, Iterator, Optional, Text
 
 from absl import flags
 
-from web_design.compiler.backend import linker
-from web_design.compiler.backend import page
-from web_design.compiler.frontend import document
+from web_compiler.backend import linker
+from web_compiler.backend import page
+from web_compiler.frontend import document
 
 flags.DEFINE_string('info_file', None, 'TODO')
 flags.DEFINE_string('version_file', None, 'TODO')
@@ -57,7 +57,7 @@ def TitleBlock(title: page.Fragment, subtitle: page.Fragment) -> page.Fragment:
 
 
 def Nav() -> page.Fragment:
-  nav_icon = linker.Reference('web_design/compiler/backend/swiss/x.svg')
+  nav_icon = linker.Reference('web_compiler/backend/swiss/x.svg')
   links = [
     ('Home', '#', nav_icon),
     ('Document index', '#', nav_icon),
@@ -121,7 +121,7 @@ def RenderDocument(doc) -> page.Fragment:
   subtitle = Render(doc.subtitle)
   copyright = Render(doc.copyright)
   sections = page.MixedContent([Render(s) for s in doc.sections])
-  style = linker.Reference('web_design/compiler/backend/swiss/style.css')
+  style = linker.Reference('web_compiler/backend/swiss/style.css')
 
   head = H('head', {}, page.MixedContent([
     H('meta', {'charset': 'utf-8'}),

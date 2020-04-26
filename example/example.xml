@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="blog.xsl"?>
+<document xmlns="http://sj-olsen.com/blog"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Lorem Ipsum</title>
+  <subtitle>désign en noir et crème</subtitle>
+  <copyright>Stuart Olsen</copyright>
+
+  <section>
+    <title>Adipiscing Elit</title>
+    <body>
+      <html:p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </html:p>
+
+      <html:p>
+        Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam
+        varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus
+        magna felis sollicitudin mauris. Integer in mauris eu nibh euismod
+        gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis
+        risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue,
+        eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas
+        fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a
+        mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque.
+        Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien,
+        sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam
+        arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet
+        et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu,
+        feugiat in, orci. In hac habitasse platea dictumst.
+      </html:p>
+    </body>
+  </section>
+
+  <section>
+    <title>C Programs</title>
+    <body>
+      <html:p>
+        Code is often rendered on web pages in floating blocks. These blocks
+        sometimes have a small header identifying the listing; other times, this
+        is omitted. The code will often be displayed with syntax highlighting
+        and/or special font styles and weights for elements like keywords.
+        However, this is usually done with client-side Javascript or server-side
+        rendering as it is not practical to embed this styling by hand. Consider
+        the following simple C program:
+      </html:p>
+
+      <code-block>
+        <header>Fibonacci example (<code>fib.c</code>)</header>
+        <body><xi:include href="web_compiler/example/fib.c" parse="text" /></body>
+      </code-block>
+
+      <html:p>
+        When run, this program prints the first ten Fibonacci numbers:
+      </html:p>
+
+      <code-block>
+        <body>$ cc fib.c
+$ ./a.out
+1 1 2 3 5 8 13 21 34 55</body>
+      </code-block>
+
+      <html:p>
+        When compiled for 64-bit x86 with optimizations turned on, GCC produces
+        something like the following:
+      </html:p>
+
+      <code-block>
+        <header><code>a.out</code> (partial disassembly)</header>
+        <body><xi:include href="web_compiler/example/fib.dis" parse="text" /></body>
+      </code-block>
+    </body>
+  </section>
+
+  <section>
+    <title>Li Europan Lingues</title>
+    <body>
+      <html:p>
+        Li Europan lingues es membres del sam familie. Lor separat existentie es
+        un myth. Por scientie, musica, sport etc, litot Europa usa li sam
+        vocabular. Li lingues differe solmen in li grammatica, li pronunciation
+        e li plu commun vocabules. Omnicos directe al desirabilite de un nov
+        lingua franca: On refusa continuar payar custosi traductores.
+      </html:p>
+
+      <html:p>
+        At solmen va esser necessi far uniform grammatica, pronunciation e plu
+        commun paroles. Ma quande lingues coalesce, li grammatica del resultant
+        lingue es plu simplic e regulari quam ti del coalescent lingues. Li nov
+        lingua franca va esser plu simplic e regulari quam li existent Europan
+        lingues. It va esser tam simplic quam Occidental in fact, it va esser
+        Occidental. A un Angleso it va semblar un simplificat Angles, quam un
+        skeptic Cambridge amico dit me que Occidental es.
+      </html:p>
+    </body>
+  </section>
+</document>

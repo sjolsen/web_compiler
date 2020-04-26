@@ -1,6 +1,6 @@
 load("@pip_deps//:requirements.bzl", "requirement")
 
-package(default_visibility = ["//compiler:__subpackages__"])
+package(default_visibility = ["//:__subpackages__"])
 
 py_library(
     name = "document",

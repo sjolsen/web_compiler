@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 
 import more_itertools
 
-from web_design.compiler.frontend import document
+from web_compiler.frontend import document
 
 
 def MapOptional(f, x):

@@ -1,6 +1,6 @@
-load("//compiler:compiler.bzl", "assets")
+load("//:compiler.bzl", "assets")
 
-package(default_visibility = ["//compiler:__subpackages__"])
+package(default_visibility = ["//:__subpackages__"])
 
 assets(
     name = "nav_buttons",
@@ -22,8 +22,8 @@ py_library(
     #     ":nav_buttons",
     # ],
     deps = [
-        "//compiler/backend:linker",
-        "//compiler/backend:page",
-        "//compiler/frontend:document",
+        "//backend:linker",
+        "//backend:page",
+        "//frontend:document",
     ],
 )

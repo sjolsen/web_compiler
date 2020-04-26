@@ -1,6 +1,6 @@
 from typing import Dict, List, NamedTuple, Set, Text, Union
 
-from web_design.compiler.backend import linker
+from web_compiler.backend import linker
 
 
 class MixedContent(NamedTuple):

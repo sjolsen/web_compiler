@@ -1,10 +1,20 @@
-InputInfo = provider(fields = ["assets", "documents", "srcs"])
+load("@bazel_skylib//lib:paths.bzl", "paths")
+
+BuildInfo = provider(fields = ["info_file", "version_file"])
+
+def _build_info(ctx):
+    return [BuildInfo(info_file = ctx.info_file, version_file = ctx.version_file)]
+
+build_info = rule(
+    implementation = _build_info,
+)
+
+InputInfo = provider(fields = ["assets", "documents"])
 
 def _assets(ctx):
     return [InputInfo(
         assets = depset(ctx.files.srcs),
         documents = depset(),
-        srcs = depset(),
     )]
 
 assets = rule(
@@ -16,9 +26,8 @@ assets = rule(
 
 def _document(ctx):
     return [InputInfo(
-        assets = depset(),
+        assets = depset(ctx.files.srcs),
         documents = depset([ctx.file.main]),
-        srcs = depset(ctx.files.srcs),
     )]
 
 document = rule(
@@ -51,7 +60,7 @@ def _workspace(ctx, label):
         return ctx.workspace_name
 
 def _runfiles_path(ctx, file):
-    return _workspace(ctx, file.owner) + "/" + file.short_path
+    return paths.normalize(_workspace(ctx, file.owner) + "/" + file.short_path)
 
 def _make_manifest(ctx, assets, documents, index, output_root):
     m_assets = ["Asset(%s, %s)" % (repr(_runfiles_path(ctx, f)), repr(f.path)) for f in assets.to_list()]
@@ -76,23 +85,24 @@ SiteInfo = provider(fields = ["tarball"])
 def _site(ctx):
     assets = depset(transitive = [src[InputInfo].assets for src in ctx.attr.srcs])
     documents = depset(transitive = [src[InputInfo].documents for src in ctx.attr.srcs])
-    srcs = depset(transitive = [src[InputInfo].srcs for src in ctx.attr.srcs])
     indices = ctx.attr.index[InputInfo].documents.to_list()
     if len(indices) != 1:
         fail("Must provide one index document", ctx.attr.index)
     index = indices[0]
     manifest = _make_manifest(ctx, assets, documents, index, ctx.attr.output_root)
+    info_file = ctx.attr.build_info[BuildInfo].info_file
+    version_file = ctx.attr.build_info[BuildInfo].version_file
     args = ctx.actions.args()
     args.add("--manifest", manifest)
     args.add("--output", ctx.outputs.out)
-    args.add("--info_file", ctx.info_file)
-    args.add("--version_file", ctx.version_file)
+    args.add("--info_file", info_file)
+    args.add("--version_file", version_file)
     ctx.actions.run(
         executable = ctx.executable._compiler,
         arguments = [args],
         inputs = depset(
-            [manifest, ctx.info_file, ctx.version_file],
-            transitive = [assets, documents, srcs]),
+            [manifest, info_file, version_file],
+            transitive = [assets, documents]),
         outputs = [ctx.outputs.out],
     )
     return [SiteInfo(tarball = ctx.outputs.out)]
@@ -111,10 +121,14 @@ site = rule(
         "output_root": attr.string(
             mandatory = True,
         ),
+        "build_info": attr.label(
+            mandatory = True,
+            providers = [BuildInfo],
+        ),
         "_compiler": attr.label(
             executable = True,
             cfg = "exec",
-            default = "//compiler",
+            default = "//:compiler",
         ),
     },
     outputs = {
