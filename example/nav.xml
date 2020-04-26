@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nav xmlns="http://sj-olsen.com/blog">
+  <nav-item href="web_compiler/example/example.xml"
+            icon="web_compiler/backend/swiss/x.svg">
+    Home
+  </nav-item>
+  <nav-item href="web_compiler/example/example.xml"
+            icon="web_compiler/backend/swiss/x.svg">
+    Document index
+  </nav-item>
+  <nav-item href="web_compiler/example/example.xml"
+            icon="web_compiler/backend/swiss/x.svg">
+    About
+  </nav-item>
+</nav>

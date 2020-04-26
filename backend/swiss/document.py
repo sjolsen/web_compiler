@@ -1,13 +1,14 @@
 import datetime
 import functools
 import html
-from typing import Any, Dict, Iterable, Iterator, Optional, Text
+from typing import Any, Dict, Iterable, Iterator, NamedTuple, Optional, Sequence, Text
 
 from absl import flags
 
 from web_compiler.backend import linker
 from web_compiler.backend import page
 from web_compiler.frontend import document
+from web_compiler.frontend import nav
 
 flags.DEFINE_string('info_file', None, 'TODO')
 flags.DEFINE_string('version_file', None, 'TODO')
@@ -28,7 +29,7 @@ def intersperse(sep: Any, l: Iterable[Any]) -> Iterator[Any]:
 
 
 @functools.singledispatch
-def Render(obj) -> page.Fragment:
+def Render(obj, **kwargs) -> page.Fragment:
   raise TypeError(f'No Render instance found for {type(obj)}')
 
 
@@ -56,19 +57,13 @@ def TitleBlock(title: page.Fragment, subtitle: page.Fragment) -> page.Fragment:
   ]))
 
 
-def Nav() -> page.Fragment:
-  nav_icon = linker.Reference('web_compiler/backend/swiss/x.svg')
-  links = [
-    ('Home', '#', nav_icon),
-    ('Document index', '#', nav_icon),
-    ('Contact', '#', nav_icon),
-  ]
+def Nav(items: Iterable[nav.NavItem]) -> page.Fragment:
   anchors = [
-    H('a', {'class': 'nav-row', 'href': href}, page.MixedContent([
-      H('img', {'class': 'nav-icon', 'src': src}),
-      H('li', {}, page.MixedContent([text])),
+    H('a', {'class': 'nav-row', 'href': i.ref}, page.MixedContent([
+      H('img', {'class': 'nav-icon', 'src': i.icon}),
+      H('li', {}, page.MixedContent([i.text])),
     ]))
-    for text, href, src in links
+    for i in items
   ]
   spacer = H('div', {'class': 'nav-spacer'})
   return H('nav', {}, page.MixedContent([
@@ -116,7 +111,7 @@ def FooterBlock(copyright: page.Fragment) -> page.Fragment:
 
 
 @Render.register(document.Document)
-def RenderDocument(doc) -> page.Fragment:
+def RenderDocument(doc, *, nav_items: Sequence[nav.NavItem] = ()) -> page.Fragment:
   title = Render(doc.title)
   subtitle = Render(doc.subtitle)
   copyright = Render(doc.copyright)
@@ -128,12 +123,16 @@ def RenderDocument(doc) -> page.Fragment:
     H('title', {}, title),
     H('link', {'rel': 'stylesheet', 'href': style, 'type': 'text/css'}),
   ]))
-  header = H('header', {},
-    H('div', {'class': 'hcenter header-flexbox'}, page.MixedContent([
-      TitleBlock(title, subtitle),
-      H('div', {'class': 'header-vr title-rule'}),
-      Nav(),
-    ])))
+  if nav_items:
+    header = H('header', {},
+      H('div', {'class': 'hcenter header-flexbox'}, page.MixedContent([
+        TitleBlock(title, subtitle),
+        H('div', {'class': 'header-vr title-rule'}),
+        Nav(nav_items),
+      ])))
+  else:
+    header = H('header', {},
+      H('div', {'class': 'hcenter'}, TitleBlock(title, subtitle)))
   main_content = H('div', {'class': 'main-content'},
     H('div', {'class': 'hcenter'},
       H('div', {'class': 'body-copy'}, sections)))

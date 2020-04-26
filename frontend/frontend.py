@@ -1,9 +1,10 @@
-from typing import Dict
+from typing import Dict, List
 from xml.etree import ElementInclude
 from xml.etree import ElementTree as ET
 
 from web_compiler.frontend import document
 from web_compiler.frontend import parser
+from web_compiler.frontend import nav
 
 
 class Loader(object):
@@ -20,3 +21,9 @@ class Loader(object):
     root = tree.getroot()
     ElementInclude.include(root, self._loader)
     return parser.ParseDocument(root)
+
+  def LoadNav(self, path: str) -> List[nav.NavItem]:
+    tree = ET.parse(path)
+    root = tree.getroot()
+    ElementInclude.include(root, self._loader)
+    return parser.ParseNav(root)

@@ -93,7 +93,11 @@ def _site(ctx):
     info_file = ctx.attr.build_info[BuildInfo].info_file
     version_file = ctx.attr.build_info[BuildInfo].version_file
     args = ctx.actions.args()
+    inputs = [manifest, info_file, version_file]
     args.add("--manifest", manifest)
+    if ctx.attr.nav:
+        inputs.append(ctx.file.nav)
+        args.add("--nav", ctx.file.nav)
     args.add("--output", ctx.outputs.out)
     args.add("--info_file", info_file)
     args.add("--version_file", version_file)
@@ -101,7 +105,7 @@ def _site(ctx):
         executable = ctx.executable._compiler,
         arguments = [args],
         inputs = depset(
-            [manifest, info_file, version_file],
+            inputs,
             transitive = [assets, documents]),
         outputs = [ctx.outputs.out],
     )
@@ -117,6 +121,9 @@ site = rule(
         "index": attr.label(
             mandatory = True,
             providers = [InputInfo],
+        ),
+        "nav": attr.label(
+            allow_single_file = True,
         ),
         "output_root": attr.string(
             mandatory = True,

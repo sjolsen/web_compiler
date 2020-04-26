@@ -13,6 +13,7 @@ from web_compiler.backend.swiss import document as swissdoc
 from web_compiler.frontend import frontend
 
 flags.DEFINE_string('manifest', None, 'TODO')
+flags.DEFINE_string('nav', None, 'TODO')
 flags.DEFINE_string('output', None, 'TODO')
 flags.mark_flags_as_required(['manifest', 'output'])
 
@@ -47,6 +48,10 @@ def main(argv):
     with tempfile.TemporaryDirectory() as d:
         load = frontend.Loader({i.src_url: i.path for i in manifest.inputs})
         link = linker.Linker(d)
+        if FLAGS.nav:
+            nav = load.LoadNav(FLAGS.nav)
+        else:
+            nav = []
         documents = set()
         for i in manifest.inputs:
             basename = os.path.basename(i.src_url)
@@ -62,7 +67,8 @@ def main(argv):
                 link.add_resource(
                     ref=ref,
                     out=os.path.join(manifest.output_root, base + '.html'),
-                    resource=page.PageResource(swissdoc.RenderDocument(doc)))
+                    resource=page.PageResource(
+                        swissdoc.RenderDocument(doc, nav_items=nav)))
                 documents.add(ref)
             else:
                 raise TypeError(i)

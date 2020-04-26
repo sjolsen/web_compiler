@@ -13,6 +13,7 @@ py_library(
     deps = [
         ":document",
         ":parser",
+        ":nav",
     ],
 )
 
@@ -21,6 +22,13 @@ py_library(
     srcs = ["parser.py"],
     deps = [
         ":document",
+        ":nav",
         requirement("more_itertools"),
     ],
+)
+
+py_library(
+    name = "nav",
+    srcs = ["nav.py"],
+    deps = ["//backend:linker"],
 )

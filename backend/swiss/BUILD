@@ -1,5 +1,6 @@
 load("//:compiler.bzl", "assets")
 
+# TODO: Decouple from the compiler framework
 package(default_visibility = ["//:__subpackages__"])
 
 assets(
@@ -25,5 +26,6 @@ py_library(
         "//backend:linker",
         "//backend:page",
         "//frontend:document",
+        "//frontend:nav",
     ],
 )

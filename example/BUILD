@@ -21,5 +21,6 @@ site(
     ],
     build_info = "//bazel:build_info",
     index = ":example_page",
+    nav = "nav.xml",
     output_root = "example",
 )

@@ -1,11 +1,14 @@
 import sys
 import re
 import typing
+from typing import List
 from xml.etree import ElementTree as ET
 
 import more_itertools
 
+from web_compiler.backend import linker
 from web_compiler.frontend import document
+from web_compiler.frontend import nav
 
 
 def MapOptional(f, x):
@@ -240,3 +243,19 @@ def ParseCodeBlock(node):
   return document.CodeBlock(
     header=MapOptional(ParseMixedContent, header),
     body=ParseMixedContent(body))
+
+
+@SimpleParser.Matching(Node(BlogTag('nav')))
+def ParseNav(node) -> List[nav.NavItem]:
+  with ParseContext(node) as i:
+    items = i.ExpectRest(Node(BlogTag('nav-item')))
+  return [ParseNavItem(item) for item in items]
+
+
+@SimpleParser.Matching(Node(BlogTag('nav-item')))
+def ParseNavItem(node) -> nav.NavItem:
+  with ParseContext(node) as i:
+    ref = linker.Reference(node.attrib['href'])
+    icon = linker.Reference(node.attrib['icon'])
+    text = ''.join(i.ExpectRest(Text))
+  return nav.NavItem(text=text, ref=ref, icon=icon)
