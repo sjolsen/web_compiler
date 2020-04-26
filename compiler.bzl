@@ -25,8 +25,15 @@ assets = rule(
 )
 
 def _document(ctx):
+    srcs = []
+    transitive_srcs = []
+    for src in ctx.attr.srcs:
+        if InputInfo in src:
+            transitive_srcs.append(src[InputInfo].assets)
+        else:
+            srcs.extend(src.files)
     return [InputInfo(
-        assets = depset(ctx.files.srcs),
+        assets = depset(srcs, transitive = transitive_srcs),
         documents = depset([ctx.file.main]),
     )]
 
@@ -65,12 +72,14 @@ def _runfiles_path(ctx, file):
 def _make_manifest(ctx, assets, documents, index, output_root):
     m_assets = ["Asset(%s, %s)" % (repr(_runfiles_path(ctx, f)), repr(f.path)) for f in assets.to_list()]
     m_docs = ["Document(%s, %s)" % (repr(_runfiles_path(ctx, f)), repr(f.path)) for f in documents.to_list()]
+    m_inputs = '\n'.join(
+        ["["] + ["        " + x + "," for x in m_assets + m_docs] + ["    ]"])
     m_contents = """Manifest(
     inputs={m_inputs},
     index={m_index},
     output_root={m_output_root})
 """.format(
-        m_inputs = "[" + ", ".join(m_assets + m_docs) + "]",
+        m_inputs = m_inputs,
         m_index = repr(_runfiles_path(ctx, index)),
         m_output_root = repr(output_root))
     manifest = ctx.actions.declare_file(ctx.label.name + '_manifest')
