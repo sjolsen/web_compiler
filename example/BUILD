@@ -7,9 +7,6 @@ document(
     srcs = [
         "fib.c",
         "fib.dis",
-        # TODO: Make this implicit
-        "//backend/swiss:nav_buttons",
-        "//backend/swiss:style",
     ],
     main = "example.xml",
 )

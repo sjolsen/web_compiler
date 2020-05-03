@@ -20,10 +20,10 @@ assets(
 py_library(
     name = "document",
     srcs = ["document.py"],
-    # data = [
-    #     ":style",
-    #     ":nav_buttons",
-    # ],
+    data = [
+        ":style",
+        ":nav_buttons",
+    ],
     deps = [
         "//backend:linker",
         "//backend:page",

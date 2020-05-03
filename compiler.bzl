@@ -11,6 +11,12 @@ build_info = rule(
 
 InputInfo = provider(fields = ["assets", "documents"])
 
+def _merge_input_info(infos):
+    return InputInfo(
+        assets = depset(transitive = [i.assets for i in infos]),
+        documents = depset(transitive = [i.documents for i in infos]),
+    )
+
 def _assets(ctx):
     return [InputInfo(
         assets = depset(ctx.files.srcs),
@@ -47,6 +53,20 @@ document = rule(
             allow_files = True,
         ),
     },
+)
+
+def _assets_aspect(target, ctx):
+    if InputInfo in target:
+        return []
+    infos = []
+    for attr in ("data", "deps"):
+        deps = getattr(ctx.rule.attr, attr, [])
+        infos.extend([dep[InputInfo] for dep in deps if InputInfo in dep])
+    return [_merge_input_info(infos)]
+
+assets_aspect = aspect(
+    implementation = _assets_aspect,
+    attr_aspects = ["data", "deps"],
 )
 
 def _workspace(ctx, label):
@@ -91,8 +111,11 @@ def _make_manifest(ctx, assets, documents, index, output_root):
 SiteInfo = provider(fields = ["tarball"])
 
 def _site(ctx):
-    assets = depset(transitive = [src[InputInfo].assets for src in ctx.attr.srcs])
-    documents = depset(transitive = [src[InputInfo].documents for src in ctx.attr.srcs])
+    merged = _merge_input_info(
+        [ctx.attr._compiler[InputInfo]]
+        + [src[InputInfo] for src in ctx.attr.srcs])
+    assets = merged.assets
+    documents = merged.documents
     indices = ctx.attr.index[InputInfo].documents.to_list()
     if len(indices) != 1:
         fail("Must provide one index document", ctx.attr.index)
@@ -144,6 +167,7 @@ site = rule(
             executable = True,
             cfg = "exec",
             default = "//:compiler",
+            aspects = [assets_aspect],
         ),
     },
     outputs = {
