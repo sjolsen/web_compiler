@@ -25,15 +25,14 @@ assets = rule(
 )
 
 def _document(ctx):
-    srcs = []
     transitive_srcs = []
     for src in ctx.attr.srcs:
         if InputInfo in src:
             transitive_srcs.append(src[InputInfo].assets)
         else:
-            srcs.extend(src.files)
+            transitive_srcs.append(src.files)
     return [InputInfo(
-        assets = depset(srcs, transitive = transitive_srcs),
+        assets = depset(transitive = transitive_srcs),
         documents = depset([ctx.file.main]),
     )]
 

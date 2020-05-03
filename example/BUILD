@@ -7,18 +7,16 @@ document(
     srcs = [
         "fib.c",
         "fib.dis",
+        # TODO: Make this implicit
+        "//backend/swiss:nav_buttons",
+        "//backend/swiss:style",
     ],
     main = "example.xml",
 )
 
 site(
     name = "example",
-    srcs = [
-        ":example_page",
-        # TODO: Make this implicit
-        "//backend/swiss:nav_buttons",
-        "//backend/swiss:style",
-    ],
+    srcs = [":example_page"],
     build_info = "//bazel:build_info",
     index = ":example_page",
     nav = "nav.xml",

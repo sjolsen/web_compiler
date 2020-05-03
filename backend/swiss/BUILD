@@ -1,4 +1,6 @@
 load("//:compiler.bzl", "assets")
+load("@pip_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_library")
 
 # TODO: Decouple from the compiler framework
 package(default_visibility = ["//:__subpackages__"])
@@ -27,5 +29,6 @@ py_library(
         "//backend:page",
         "//frontend:document",
         "//frontend:nav",
+        requirement("absl-py"),
     ],
 )
